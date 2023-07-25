@@ -6,7 +6,7 @@ import MovieSelection from './MovieSelection';
 //import all necessary libraries here, e.g., Material-UI Typography, as follows
 import { Box, Grid, Button, Typography } from '@mui/material';
 
-const Review = () => {
+const ReviewComp = () => {
 
   const serverURL = "";
 
@@ -195,4 +195,4 @@ const Review = () => {
   );
 }
 
-export default Review;
+export default ReviewComp;
