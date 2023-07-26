@@ -31,11 +31,6 @@ const MyPage = () => {
                   Review
                 </Typography>
               </Button>
-              <Button sx={{ textTransform: 'none' }} onClick={() => navigate('/MyPage')}>
-                <Typography variant="h6" noWrap style={{ color: '#fff' }}>
-                  MyPage
-                </Typography>
-              </Button>
             </div>
           </Box>
         </Toolbar>

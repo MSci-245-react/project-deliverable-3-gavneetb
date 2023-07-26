@@ -22,11 +22,6 @@ const Search = () => {
                   Landing
                 </Typography>
               </Button>
-              <Button sx={{ textTransform: 'none' }} onClick={() => navigate('/Search')}>
-                <Typography variant="h6" noWrap style={{ color: '#fff' }}>
-                  Search
-                </Typography>
-              </Button>
               <Button sx={{ textTransform: 'none' }} onClick={() => navigate('/Review')}>
                 <Typography variant="h6" noWrap style={{ color: '#fff' }}>
                   Review

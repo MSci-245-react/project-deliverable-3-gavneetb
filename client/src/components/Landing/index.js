@@ -17,11 +17,6 @@ function Landing() {
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <div>
-              <Button sx={{ textTransform: 'none' }} onClick={() => navigate('/')}>
-                <Typography variant="h6" noWrap style={{ color: '#fff' }}>
-                  Landing
-                </Typography>
-              </Button>
               <Button sx={{ textTransform: 'none' }} onClick={() => navigate('/Search')}>
                 <Typography variant="h6" noWrap style={{ color: '#fff' }}>
                   Search

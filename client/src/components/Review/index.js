@@ -6,9 +6,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import ReviewComp from './Review';
+import Review from './Review';
 
-const Review = () => {
+const App = () => {
   const navigate = useNavigate();
 
   return (
@@ -28,11 +28,6 @@ const Review = () => {
                   Search
                 </Typography>
               </Button>
-              <Button sx={{ textTransform: 'none' }} onClick={() => navigate('/Review')}>
-                <Typography variant="h6" noWrap style={{ color: '#fff' }}>
-                  Review
-                </Typography>
-              </Button>
               <Button sx={{ textTransform: 'none' }} onClick={() => navigate('/MyPage')}>
                 <Typography variant="h6" noWrap style={{ color: '#fff' }}>
                   MyPage
@@ -43,9 +38,9 @@ const Review = () => {
         </Toolbar>
       </Container>
     </AppBar>
-    <ReviewComp/>
+    <Review/>
   </div>
   );
 };
 
-export default Review;
+export default App;
