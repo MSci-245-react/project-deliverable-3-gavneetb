@@ -40,6 +40,33 @@ app.post('/api/getMovies', (req, res) => {
 	
 });
 
+
+app.post('/api/getSearchedMovie', (req, res) => {
+	let connection = mysql.createConnection(config);
+
+	const {movieTitle} = req.body;
+	console.log("Search by:", movieTitle);
+
+	let sql = `SELECT * FROM movies WHERE name LIKE ?`;
+	
+	let data = [`%${movieTitle}%`]
+
+	  connection.query(sql, data, (error, results) => {
+		if (error) {
+		  console.error(error);
+		  res.status(500).send('Internal Server Error');
+		  return;
+		}
+
+		let string = JSON.stringify(results);
+		res.send({ express: string });
+		
+	});
+
+	connection.end();
+	
+});
+
 app.post('/api/addReview', (req, res) => {
 	let connection = mysql.createConnection(config);
 	
