@@ -7,8 +7,8 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-function Landing() {
-  
+
+const Search = () => {
   const navigate = useNavigate();
 
   return (
@@ -17,9 +17,9 @@ function Landing() {
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <div>
-              <Button sx={{ textTransform: 'none' }} onClick={() => navigate('/Search')}>
+              <Button sx={{ textTransform: 'none' }} onClick={() => navigate('/')}>
                 <Typography variant="h6" noWrap style={{ color: '#fff' }}>
-                  Search
+                  Landing
                 </Typography>
               </Button>
               <Button sx={{ textTransform: 'none' }} onClick={() => navigate('/Review')}>
@@ -38,7 +38,6 @@ function Landing() {
       </Container>
     </AppBar>
   );
-}
+};
 
-export default Landing;
-
+export default Search;
