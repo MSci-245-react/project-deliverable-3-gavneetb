@@ -6,33 +6,27 @@ import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import { Box, Grid, Button, Typography } from '@mui/material';
 
-  const serverURL = "";
 
 const Search = () => {
   const navigate = useNavigate();
 
   const [movieTitle, setMovieTitle] = useState('');
+  const [actorName, setActorName] = useState('');
+  const [directorName, setDirectorName] = useState('');
   const [results, setResults] = useState([]);
-  // const [actorName, setActorName] = useState('');
-  // const [directorName, setDirectorName] = useState('');
 
-  //THIS ONE EVENT HANDLE DEALS WITH EACH OF THE TEXT FIELDS
-  const handleEventChange = (event) => {
+  const handleTitleChange = (event) => {
     setMovieTitle(event.target.value);
   };
 
-  // setActorName(event.target.value);
-  // setDirectorName(event.target.value); 
+  const handleActorChange = (event) => {
+    setActorName(event.target.value);
+  };
 
-  //USE EFFECT HERE WILL HAND ALL THREE DEPENDENCIES
-  // React.useEffect(() => {
-  //   handleMovieSearch();
-  // }, [movieTitle]);
+  const handleDirectorChange = (event) => {
+    setDirectorName(event.target.value); 
+  };
 
-  //, actorName, directorName
-
-
-  //THIS IS SUPPOSED TO GET THE MOVIE 
   const handleMovieSearch = () => {
     callApiFindSearchedMovie()
       .then(res => {
@@ -45,13 +39,12 @@ const Search = () => {
       });
   }
   
-  // , actorName, directorName
   const callApiFindSearchedMovie = async () => {
-    const serverURL = ""; // Your server URL here
+    const serverURL = "";
     
     const url = serverURL + "/api/getSearchedMovie";
     console.log("URL:", url);
-    console.log("Search by:", movieTitle);
+    console.log("Search by:", movieTitle, actorName, directorName);
 
     const response = await fetch(url, {
       method: "POST",
@@ -60,6 +53,8 @@ const Search = () => {
       },
       body: JSON.stringify({
         movieTitle: movieTitle,
+        actorName: actorName,
+        directorName: directorName
       }),
     });
 
@@ -117,18 +112,18 @@ const Search = () => {
                 label="Movie Title" 
                 variant="outlined" 
                 value={movieTitle} 
-                onChange={handleEventChange} 
+                onChange={handleTitleChange} 
                 fullWidth
               />
             </Container>
           </Grid>
-          {/* <Grid item xs={12}>
+          <Grid item xs={12}>
             <Container sx={{ maxWidth: '60%' }}>
               <TextField 
                 label="Actor Name" 
                 variant="outlined" 
                 value={actorName} 
-                onChange={handleEventChange} 
+                onChange={handleActorChange} 
                 fullWidth
               />
             </Container>
@@ -139,11 +134,11 @@ const Search = () => {
                 label="Director Name" 
                 variant="outlined" 
                 value={directorName} 
-                onChange={handleEventChange} 
+                onChange={handleDirectorChange} 
                 fullWidth
               />
             </Container>
-          </Grid> */}
+          </Grid>
           <Grid item xs={12}>
             <Container sx={{ maxWidth: '60%' }}>
               <Button variant="contained" color="secondary" textAlign="center" onClick={handleMovieSearch}>
@@ -156,11 +151,13 @@ const Search = () => {
       <Box>
       {results.length > 0 && (
         <Grid container direction="column" alignItems="center" justify="center" spacing={3}>
-          {results.map((movie) => (
-            <Grid item key={movie.id}>
-              <Typography variant="h6">{movie.name}</Typography>
-            </Grid>
-          ))}
+            {results.map((movie) => (
+              <Grid item key={movie.id}>
+                <Typography variant="h6">Movie: {movie.movie_name}</Typography>
+                <Typography variant="h6">Actors: {movie.actors}</Typography>
+                <Typography variant="h6">Directors: {movie.directors}</Typography>
+              </Grid>
+            ))}
         </Grid>
       )}
     </Box>
