@@ -4,8 +4,8 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { Box, Grid, Button, Typography } from '@mui/material';
-
 
 const Search = () => {
   const navigate = useNavigate();
@@ -149,18 +149,32 @@ const Search = () => {
         </Grid>
       </Box>
       <Box>
-      {results.length > 0 && (
-        <Grid container direction="column" alignItems="center" justify="center" spacing={3}>
-            {results.map((movie) => (
-              <Grid item key={movie.id}>
-                <Typography variant="h6">Movie: {movie.movie_name}</Typography>
-                <Typography variant="h6">Actors: {movie.actors}</Typography>
-                <Typography variant="h6">Directors: {movie.directors}</Typography>
-              </Grid>
-            ))}
-        </Grid>
-      )}
-    </Box>
+        {results.length > 0 && (
+          <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ fontWeight: 'bold' }}>Movie</TableCell>
+                    <TableCell style={{ fontWeight: 'bold' }}>Directors</TableCell>
+                    <TableCell style={{ fontWeight: 'bold' }}>Review</TableCell>
+                    <TableCell style={{ fontWeight: 'bold' }}>Score</TableCell>
+                  </TableRow>
+                </TableHead>
+              <TableBody>
+                {results.map((movie) => (
+                  <TableRow key={movie.id}>
+                    <TableCell>{movie.movie_name}</TableCell>
+                    <TableCell>{movie.directors}</TableCell>
+                    <TableCell>{movie.reviews}</TableCell>
+                    <TableCell>{movie.average_review_score}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </Box>
+
   </>
   );
 };

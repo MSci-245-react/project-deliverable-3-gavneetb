@@ -48,27 +48,28 @@ app.post('/api/getSearchedMovie', (req, res) => {
 	console.log("Search by:", movieTitle, actorName, directorName);
   
 	let sql = `
-	  SELECT 
-		  movies.name AS movie_name,
-		  GROUP_CONCAT(DISTINCT CONCAT(actors.first_name, ' ', actors.last_name)) AS actors,
-		  GROUP_CONCAT(DISTINCT CONCAT(directors.first_name, ' ', directors.last_name)) AS directors,
-		  GROUP_CONCAT(DISTINCT CONCAT(' Review: ', Review.reviewContent)) AS reviews,
-		  AVG(Review.reviewScore) AS average_review_score
-	  FROM 
-		  movies
-	  LEFT JOIN 
-		  roles ON movies.id = roles.movie_id
-	  LEFT JOIN 
-		  actors ON roles.actor_id = actors.id
-	  LEFT JOIN 
-		  movies_directors ON movies.id = movies_directors.movie_id
-	  LEFT JOIN 
-		  directors ON movies_directors.director_id = directors.id
-	  LEFT JOIN 
-		  Review ON movies.id = Review.id
-	  WHERE 
-		  movies.name LIKE ?
-	`;
+	SELECT 
+		movies.name AS movie_name,
+		GROUP_CONCAT(DISTINCT CONCAT(actors.first_name, ' ', actors.last_name)) AS actors,
+		GROUP_CONCAT(DISTINCT CONCAT(directors.first_name, ' ', directors.last_name)) AS directors,
+		GROUP_CONCAT(DISTINCT CONCAT(' Review: ', Review.reviewContent) SEPARATOR '\\n') AS reviews,
+		AVG(Review.reviewScore) AS average_review_score
+	FROM 
+		movies
+	LEFT JOIN 
+		roles ON movies.id = roles.movie_id
+	LEFT JOIN 
+		actors ON roles.actor_id = actors.id
+	LEFT JOIN 
+		movies_directors ON movies.id = movies_directors.movie_id
+	LEFT JOIN 
+		directors ON movies_directors.director_id = directors.id
+	LEFT JOIN 
+		Review ON movies.id = Review.id
+	WHERE 
+		movies.name LIKE ?
+  `;
+  
   
 	let data = [`%${movieTitle}%`];
   
