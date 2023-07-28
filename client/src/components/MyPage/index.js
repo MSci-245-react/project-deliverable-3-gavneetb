@@ -6,11 +6,62 @@ import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+
+const serverURL = " ";
 
 const MyPage = () => {
+
+  const [movies, setMovies] = React.useState([]);
+  const [selectedMovie, setSelectedMovie] = React.useState("");
+  const [buttonClicked, setButtonClicked] = React.useState(false);
+
+  const handleButtonClick = () => {
+    setButtonClicked(true);
+    //ADD A REVIEW BACK
+    // callApiAddReview()
+  }
+
+  const handleSelectChange = (event) => {
+    setSelectedMovie(event.target.value);
+  };
+
   const navigate = useNavigate();
 
+  const movieNames = movies.map((movie) => movie.name);
+
+
+  React.useEffect(() => {
+    loadMovies();
+  }, []);
+
+  const loadMovies = () => {
+    callApiGetMovies(serverURL)
+      .then(res => {
+        console.log("callMoviesAPI returned: ", res)
+        console.log("callMoviesAPI parsed: ", res);
+        setMovies(res);
+      })
+  }
+
+  const callApiGetMovies = async (serverURL) => {
+    const url = serverURL + "/api/getMovies";
+    console.log(url);
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
+    return body;
+  }
+
   return (
+    <>
     <AppBar position="static" color="secondary">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -36,6 +87,25 @@ const MyPage = () => {
         </Toolbar>
       </Container>
     </AppBar>
+    <Grid justifyContent="center" margin="10px" marginBottom="40px" padding="20px" backgroundColor="#f0a8e0">
+      <Typography align="center" variant="h3" component="h1" fontWeight="bold" color="secondary" >Give feedback to an article!</Typography>
+    </Grid>
+    <FormControl style={{ width: '50%'}} color="secondary" >
+        <InputLabel id="movie-select-label">Select a Movie</InputLabel>
+        <Select labelId="movie-select-label" id="movie-select" value={selectedMovie} onChange={handleSelectChange}>
+          {movieNames.map((title) => (
+            <MenuItem key={title} value={title}>
+              {title}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+        <Grid marginLeft="45%" marginTop="15px" padding="20px">
+          <Button variant="contained" color="secondary" onClick={handleButtonClick} marginTop={2}>
+            Submit
+          </Button>
+        </Grid>
+   </>
   );
 };
 
