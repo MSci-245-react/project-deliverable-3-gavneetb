@@ -7,6 +7,8 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 
 const serverURL = " ";
@@ -17,6 +19,7 @@ const MyPage = () => {
   const [selectedMovie, setSelectedMovie] = React.useState(null);
   const [rating, setRating] = React.useState(null);
   const [buttonClicked, setButtonClicked] = React.useState(false);
+  const [feedback, setFeedback] = React.useState('');
 
 
   const handleSelectChange = (event) => {
@@ -55,24 +58,41 @@ const MyPage = () => {
   }
 
   const findMovieID = () => {
-    const movie = movies.find(movie => movie.name === selectedMovie);
+    const movie = movies.find(movie => movie.name === selectedMovie.name);
+    console.log("SELECTEDMOVIE:", selectedMovie);
+    console.log("MOVIE:", movie);
     if (movie) {
       return movie.id
     }
     return null;
   }
 
-  const handleButtonClick = (value) => {
-    setRating(value);
+  const handleFeedbackClick = () => {
+    if (feedback === '') {
+      console.log('No feedback provided');
+      return;
+    }
+
     callApiAddArticleRating()
+
+    setFeedback('');
+    setRating(null);
+    setButtonClicked(false);
+    setSelectedMovie("");
+  }
+  
+  const handleButtonClick = (value) => {
+    setButtonClicked(true);
+    setRating(value);
   };
 
 
     const callApiAddArticleRating = async () => {
       const url = serverURL + "/api/addArticleRating";
       const data = {
-        movie_id: 969,
-        rating: 1
+        movie_id: findMovieID(),
+        rating: rating,
+        feedback: feedback
       };
     
       const response = await fetch(url, {
@@ -84,14 +104,10 @@ const MyPage = () => {
       });
     
       const body = await response.json();
-      if (response.status !== 300) throw Error(body.message)
+      if (response.status !== 200 && response.status !== 201) throw Error(body.message);
   
       return body;
     };
-
-
-
-
 
   return (
     <>
@@ -137,7 +153,21 @@ const MyPage = () => {
           <div>
             <button onClick={() => handleButtonClick(0)}>Rate as 0</button>
             <button onClick={() => handleButtonClick(1)}>Rate as 1</button>
-            <p>Current rating: {rating}</p>
+          </div>
+          <div>
+          {buttonClicked && 
+            <div>
+              <TextField
+                id="outlined-basic" 
+                label="Provide feedback" 
+                variant="outlined"
+                onChange={(event) => setFeedback(event.target.value)}
+              />
+              <Button onClick={() => handleFeedbackClick()}>
+                Submit
+              </Button>
+            </div>
+          }
           </div>
         </Grid>
         {selectedMovie && <iframe width="560" height="315" src={selectedMovie.article_link} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>}

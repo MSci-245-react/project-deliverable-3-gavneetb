@@ -124,9 +124,8 @@ app.post('/api/addReview', (req, res) => {
 		
 		  const reqData = req.body;
 	  
-		  let insertReviewSQL = `INSERT INTO Article (movie_id, rating) VALUES (?, ?)`;
-		//   let insertReviewData = [reqData.movie_id, reqData.rating];
-			let insertReviewData = [969, 1];
+		  let insertReviewSQL = `INSERT INTO Article (movie_id, rating, feedback) VALUES (?, ?, ?)`;
+		  let insertReviewData = [reqData.movie_id, reqData.rating, reqData.feedback];
 		  connection.query(insertReviewSQL, insertReviewData, (error, results, fields) => {
 			if (error) {
 			  console.log("error with query connection", error);
