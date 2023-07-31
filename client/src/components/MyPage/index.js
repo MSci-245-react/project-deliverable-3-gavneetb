@@ -14,23 +14,17 @@ const serverURL = " ";
 const MyPage = () => {
 
   const [movies, setMovies] = React.useState([]);
-  const [selectedMovie, setSelectedMovie] = React.useState("");
+  const [selectedMovie, setSelectedMovie] = React.useState(null);
+  const [rating, setRating] = React.useState(null);
   const [buttonClicked, setButtonClicked] = React.useState(false);
 
-  const handleButtonClick = () => {
-    setButtonClicked(true);
-    //ADD A REVIEW BACK
-    // callApiAddReview()
-  }
 
   const handleSelectChange = (event) => {
-    setSelectedMovie(event.target.value);
+    const selectedMovie = movies.find(movie => movie.name === event.target.value);
+    setSelectedMovie(selectedMovie);
   };
 
   const navigate = useNavigate();
-
-  const movieNames = movies.map((movie) => movie.name);
-
 
   React.useEffect(() => {
     loadMovies();
@@ -59,6 +53,45 @@ const MyPage = () => {
     if (response.status !== 200) throw Error(body.message);
     return body;
   }
+
+  const findMovieID = () => {
+    const movie = movies.find(movie => movie.name === selectedMovie);
+    if (movie) {
+      return movie.id
+    }
+    return null;
+  }
+
+  const handleButtonClick = (value) => {
+    setRating(value);
+    callApiAddArticleRating()
+  };
+
+
+    const callApiAddArticleRating = async () => {
+      const url = serverURL + "/api/addArticleRating";
+      const data = {
+        movie_id: 969,
+        rating: 1
+      };
+    
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+    
+      const body = await response.json();
+      if (response.status !== 300) throw Error(body.message)
+  
+      return body;
+    };
+
+
+
+
 
   return (
     <>
@@ -92,20 +125,23 @@ const MyPage = () => {
     </Grid>
     <FormControl style={{ width: '50%'}} color="secondary" >
         <InputLabel id="movie-select-label">Select a Movie</InputLabel>
-        <Select labelId="movie-select-label" id="movie-select" value={selectedMovie} onChange={handleSelectChange}>
-          {movieNames.map((title) => (
-            <MenuItem key={title} value={title}>
-              {title}
+        <Select labelId="movie-select-label" id="movie-select" value={selectedMovie?.name} onChange={handleSelectChange}>
+          {movies.map((movie) => (
+            <MenuItem key={movie.name} value={movie.name}>
+              {movie.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
         <Grid marginLeft="45%" marginTop="15px" padding="20px">
-          <Button variant="contained" color="secondary" onClick={handleButtonClick} marginTop={2}>
-            Submit
-          </Button>
+          <div>
+            <button onClick={() => handleButtonClick(0)}>Rate as 0</button>
+            <button onClick={() => handleButtonClick(1)}>Rate as 1</button>
+            <p>Current rating: {rating}</p>
+          </div>
         </Grid>
-   </>
+        {selectedMovie && <iframe width="560" height="315" src={selectedMovie.article_link} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>}
+    </>
   );
 };
 
