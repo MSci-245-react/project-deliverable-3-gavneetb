@@ -8,8 +8,11 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-
+import CssBaseline from '@mui/material/CssBaseline';
+import IconButton from '@mui/material/IconButton';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import thumbsdown from "../../../src/thumb-down.png"
+import thumbsup from "../../../src/thumb-up.png"
 
 const serverURL = " ";
 
@@ -139,38 +142,68 @@ const MyPage = () => {
     <Grid justifyContent="center" margin="10px" marginBottom="40px" padding="20px" backgroundColor="#f0a8e0">
       <Typography align="center" variant="h3" component="h1" fontWeight="bold" color="secondary" >Give feedback to an article!</Typography>
     </Grid>
-    <FormControl style={{ width: '50%'}} color="secondary" >
-        <InputLabel id="movie-select-label">Select a Movie</InputLabel>
-        <Select labelId="movie-select-label" id="movie-select" value={selectedMovie?.name} onChange={handleSelectChange}>
-          {movies.map((movie) => (
-            <MenuItem key={movie.name} value={movie.name}>
-              {movie.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-        <Grid marginLeft="45%" marginTop="15px" padding="20px">
-          <div>
-            <button onClick={() => handleButtonClick(0)}>Rate as 0</button>
-            <button onClick={() => handleButtonClick(1)}>Rate as 1</button>
-          </div>
-          <div>
-          {buttonClicked && 
-            <div>
-              <TextField
-                id="outlined-basic" 
-                label="Provide feedback" 
-                variant="outlined"
-                onChange={(event) => setFeedback(event.target.value)}
-              />
-              <Button onClick={() => handleFeedbackClick()}>
-                Submit
-              </Button>
-            </div>
-          }
-          </div>
+    <CssBaseline />
+    <Box
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#FCE8FA",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingTop: "100px"
+      }}
+    >
+      <Container maxWidth="lg">  {/* Change here */}
+        <Grid container direction="column" spacing={2} alignItems="center">
+          <Grid item>
+            <FormControl style={{ width: '350px'}} color="secondary">
+              <InputLabel id="movie-select-label">Select a Movie</InputLabel>
+              <Select labelId="movie-select-label" id="movie-select" value={selectedMovie?.name} onChange={handleSelectChange}>
+                {movies.map((movie) => (
+                  <MenuItem key={movie.name} value={movie.name}>
+                    {movie.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          {selectedMovie && (
+            <>
+              <Grid item>
+                <iframe style={{ backgroundColor: "white" }} width="700px" height="350px" src={selectedMovie.article_link} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              </Grid>
+              <Grid item>
+                <IconButton onClick={() => handleButtonClick(0)}>
+                  <img src={thumbsdown} alt="Rate as 0" style={{width: "60px", height: "60px"}} />
+                </IconButton>
+                <IconButton  onClick={() => handleButtonClick(1)}>
+                  <img src={thumbsup} alt="Rate as 1" style={{width: "60px", height: "60px"}} />
+                </IconButton>
+              </Grid>
+            </>
+          )}
+          {buttonClicked && (
+            <Grid item container direction="column" alignItems="center">
+              <Grid item>
+                <TextField
+                  id="outlined-basic"
+                  label="Provide feedback"
+                  variant="outlined"
+                  color="secondary"
+                  style={{ width: '500px', marginTop: '20px', marginBottom: '20px' }}
+                  onChange={(event) => setFeedback(event.target.value)}
+                />
+              </Grid>
+              <Grid item>
+                <Button variant="contained" color="secondary" onClick={() => handleFeedbackClick()} style={{ marginBottom: '20px' }}>
+                  Submit
+                </Button>
+              </Grid>
+            </Grid>            
+          )}
         </Grid>
-        {selectedMovie && <iframe width="560" height="315" src={selectedMovie.article_link} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>}
+      </Container>
+    </Box>
     </>
   );
 };

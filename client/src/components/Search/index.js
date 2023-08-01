@@ -6,6 +6,13 @@ import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { Box, Grid, Button, Typography } from '@mui/material';
+import { styled } from '@mui/system';
+
+const StyledTableCell = styled(TableCell)(() => ({
+  fontWeight: "bold",
+  textTransform: "uppercase",
+  textAlign: "center",
+}));
 
 const Search = () => {
   const navigate = useNavigate();
@@ -141,7 +148,7 @@ const Search = () => {
           </Grid>
           <Grid item xs={12}>
             <Container sx={{ maxWidth: '60%' }}>
-              <Button variant="contained" color="secondary" textAlign="center" onClick={handleMovieSearch}>
+              <Button style={{marginBottom: "50px"}} variant="contained" color="secondary" textAlign="center" onClick={handleMovieSearch}>
                 Search
               </Button>
             </Container>
@@ -150,16 +157,16 @@ const Search = () => {
       </Box>
       <Box>
         {results.length > 0 && (
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} style={{ maxWidth: '700px', margin: 'auto', borderColor: 'darkgray', borderWidth: '2px', borderStyle: 'solid' }}>
             <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ fontWeight: 'bold' }}>Movie</TableCell>
-                    <TableCell style={{ fontWeight: 'bold' }}>Directors</TableCell>
-                    <TableCell style={{ fontWeight: 'bold' }}>Review</TableCell>
-                    <TableCell style={{ fontWeight: 'bold' }}>Score</TableCell>
-                  </TableRow>
-                </TableHead>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Movie</StyledTableCell>
+                  <StyledTableCell>Directors</StyledTableCell>
+                  <StyledTableCell>Review</StyledTableCell>
+                  <StyledTableCell>Score</StyledTableCell>
+                </TableRow>
+              </TableHead>
               <TableBody>
                 {results.map((movie) => (
                   <TableRow key={movie.id}>
@@ -174,7 +181,6 @@ const Search = () => {
           </TableContainer>
         )}
       </Box>
-
   </>
   );
 };
