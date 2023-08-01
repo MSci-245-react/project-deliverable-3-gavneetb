@@ -25,8 +25,6 @@ const MyPage = () => {
   const [feedback, setFeedback] = React.useState('');
   const [finalMovie, setFinalMovie] = React.useState(null);
 
-
-
   const handleSelectChange = (event) => {
     const selectedMovieName = event.target.value;
 
@@ -79,18 +77,9 @@ const MyPage = () => {
   }
 
   const handleFeedbackClick = () => {
-    // if (feedback === '') {
-    //   console.log('No feedback provided');
-    //   return;
-    // }
-
     callApiAddArticleRating()
-    setFinalMovie(selectedMovie)
-
-    console.log(finalMovie)
-
-
-
+    setFinalMovie(selectedMovie)  
+    
     if (feedback !== "") {
       setFeedback('');
       setRating(null);
@@ -99,8 +88,6 @@ const MyPage = () => {
     } else {
       console.log("complete the fields")
     }
-
-
   }
   
   const handleButtonClick = (value) => {
@@ -159,7 +146,7 @@ const MyPage = () => {
       </Container>
     </AppBar>
     <Grid justifyContent="center" margin="10px" marginBottom="40px" padding="20px" backgroundColor="#f0a8e0">
-      <Typography align="center" variant="h3" component="h1" fontWeight="bold" color="secondary" >Give feedback to an article!</Typography>
+      <Typography align="center" variant="h3" component="h1" fontWeight="bold" color="secondary" >Read and Review!</Typography>
     </Grid>
     <CssBaseline />
     <Box
@@ -172,7 +159,7 @@ const MyPage = () => {
         paddingTop: "100px"
       }}
     >
-      <Container maxWidth="lg">  {/* Change here */}
+      <Container maxWidth="lg"> 
         <Grid container direction="column" spacing={2} alignItems="center">
           <Grid item>
             <FormControl style={{ width: '350px'}} color="secondary">
@@ -187,19 +174,29 @@ const MyPage = () => {
             </FormControl>
           </Grid>
           {selectedMovie && (
-            <>
-              <Grid item>
-                <iframe style={{ backgroundColor: "white" }} width="700px" height="350px" src={selectedMovie.article_link} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-              </Grid>
-              <Grid item>
-                <IconButton onClick={() => handleButtonClick(0)}>
-                  <img src={thumbsdown} alt="Rate as 0" style={{width: "60px", height: "60px"}} />
-                </IconButton>
-                <IconButton  onClick={() => handleButtonClick(1)}>
-                  <img src={thumbsup} alt="Rate as 1" style={{width: "60px", height: "60px"}} />
-                </IconButton>
-              </Grid>
-            </>
+            <Grid item xs={12}>
+              {selectedMovie.article_link ? (
+                <>
+                  <Grid container justifyContent="center">
+                    <iframe style={{ backgroundColor: "white" }} width="700px" height="350px" src={selectedMovie.article_link} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                  </Grid>
+                  <Grid container justifyContent="center">
+                    <Grid item>
+                      <IconButton onClick={() => handleButtonClick(0)}>
+                        <img src={thumbsdown} alt="Rate as 0" style={{width: "60px", height: "60px"}} />
+                      </IconButton>
+                      <IconButton onClick={() => handleButtonClick(1)}>
+                        <img src={thumbsup} alt="Rate as 1" style={{width: "60px", height: "60px"}} />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </>
+              ) : (
+                <Typography variant="h6" component="h2" color="secondary">
+                  Please select another movie
+                </Typography>
+              )}
+            </Grid>
           )}
           {buttonClicked && (
             <Grid item container direction="column" alignItems="center">
@@ -214,7 +211,7 @@ const MyPage = () => {
                 />
               </Grid>
               <Grid item>
-                <Button variant="contained" color="secondary" onClick={() => handleFeedbackClick()} style={{ marginBottom: '20px' }}>
+                <Button variant="contained" color="secondary" onClick={handleFeedbackClick} style={{ marginBottom: '20px' }}>
                   Submit
                 </Button>
               </Grid>
