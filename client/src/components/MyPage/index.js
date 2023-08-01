@@ -23,11 +23,19 @@ const MyPage = () => {
   const [rating, setRating] = React.useState(null);
   const [buttonClicked, setButtonClicked] = React.useState(false);
   const [feedback, setFeedback] = React.useState('');
+  const [finalMovie, setFinalMovie] = React.useState(null);
+
 
 
   const handleSelectChange = (event) => {
-    const selectedMovie = movies.find(movie => movie.name === event.target.value);
-    setSelectedMovie(selectedMovie);
+    const selectedMovieName = event.target.value;
+
+    if (selectedMovieName === '') {
+      setSelectedMovie(null);
+    } else {
+      const selectedMovie = movies.find(movie => movie.name === selectedMovieName);
+      setSelectedMovie(selectedMovie);
+    }
   };
 
   const navigate = useNavigate();
@@ -71,17 +79,28 @@ const MyPage = () => {
   }
 
   const handleFeedbackClick = () => {
-    if (feedback === '') {
-      console.log('No feedback provided');
-      return;
-    }
+    // if (feedback === '') {
+    //   console.log('No feedback provided');
+    //   return;
+    // }
 
     callApiAddArticleRating()
+    setFinalMovie(selectedMovie)
 
-    setFeedback('');
-    setRating(null);
-    setButtonClicked(false);
-    setSelectedMovie("");
+    console.log(finalMovie)
+
+
+
+    if (feedback !== "") {
+      setFeedback('');
+      setRating(null);
+      setButtonClicked(false);
+      setSelectedMovie(null);
+    } else {
+      console.log("complete the fields")
+    }
+
+
   }
   
   const handleButtonClick = (value) => {
@@ -158,7 +177,7 @@ const MyPage = () => {
           <Grid item>
             <FormControl style={{ width: '350px'}} color="secondary">
               <InputLabel id="movie-select-label">Select a Movie</InputLabel>
-              <Select labelId="movie-select-label" id="movie-select" value={selectedMovie?.name} onChange={handleSelectChange}>
+              <Select labelId="movie-select-label" id="movie-select" value={selectedMovie?.name || ''} onChange={handleSelectChange}>
                 {movies.map((movie) => (
                   <MenuItem key={movie.name} value={movie.name}>
                     {movie.name}
