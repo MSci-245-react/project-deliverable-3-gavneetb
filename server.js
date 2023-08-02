@@ -5,7 +5,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 
-//assumed to be used later
 import response from 'express';
 import fetch from 'node-fetch';
 
@@ -119,6 +118,21 @@ app.post('/api/addReview', (req, res) => {
 	  connection.end()
 	});
 
+	app.post('/api/addArticleRating', (req, res) => {
+		let connection = mysql.createConnection(config);
+		
+		  const reqData = req.body;
+	  
+		  let insertReviewSQL = `INSERT INTO Article (movie_id, rating, feedback) VALUES (?, ?, ?)`;
+		  let insertReviewData = [reqData.movie_id, reqData.rating, reqData.feedback];
+		  connection.query(insertReviewSQL, insertReviewData, (error, results, fields) => {
+			if (error) {
+			  console.log("error with query connection", error);
+			}
+			res.send('done');
+		  });
+		  connection.end()
+		});
 
 app.post('/api/loadUserSettings', (req, res) => {
 

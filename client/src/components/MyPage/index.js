@@ -7,30 +7,36 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import CssBaseline from '@mui/material/CssBaseline';
+import IconButton from '@mui/material/IconButton';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import thumbsdown from "../../../src/thumb-down.png"
+import thumbsup from "../../../src/thumb-up.png"
 
 const serverURL = " ";
 
 const MyPage = () => {
 
   const [movies, setMovies] = React.useState([]);
-  const [selectedMovie, setSelectedMovie] = React.useState("");
+  const [selectedMovie, setSelectedMovie] = React.useState(null);
+  const [rating, setRating] = React.useState(null);
   const [buttonClicked, setButtonClicked] = React.useState(false);
-
-  const handleButtonClick = () => {
-    setButtonClicked(true);
-    //ADD A REVIEW BACK
-    // callApiAddReview()
-  }
+  const [feedback, setFeedback] = React.useState('');
+  const [finalMovie, setFinalMovie] = React.useState(null);
 
   const handleSelectChange = (event) => {
-    setSelectedMovie(event.target.value);
+    const selectedMovieName = event.target.value;
+
+    if (selectedMovieName === '') {
+      setSelectedMovie(null);
+    } else {
+      const selectedMovie = movies.find(movie => movie.name === selectedMovieName);
+      setSelectedMovie(selectedMovie);
+    }
   };
 
   const navigate = useNavigate();
-
-  const movieNames = movies.map((movie) => movie.name);
-
 
   React.useEffect(() => {
     loadMovies();
@@ -60,6 +66,58 @@ const MyPage = () => {
     return body;
   }
 
+  const findMovieID = () => {
+    const movie = movies.find(movie => movie.name === selectedMovie.name);
+    console.log("SELECTEDMOVIE:", selectedMovie);
+    console.log("MOVIE:", movie);
+    if (movie) {
+      return movie.id
+    }
+    return null;
+  }
+
+  const handleFeedbackClick = () => {
+    callApiAddArticleRating()
+    setFinalMovie(selectedMovie)  
+    
+    if (feedback !== "") {
+      setFeedback('');
+      setRating(null);
+      setButtonClicked(false);
+      setSelectedMovie(null);
+    } else {
+      console.log("complete the fields")
+    }
+  }
+  
+  const handleButtonClick = (value) => {
+    setButtonClicked(true);
+    setRating(value);
+  };
+
+
+    const callApiAddArticleRating = async () => {
+      const url = serverURL + "/api/addArticleRating";
+      const data = {
+        movie_id: findMovieID(),
+        rating: rating,
+        feedback: feedback
+      };
+    
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+    
+      const body = await response.json();
+      if (response.status !== 200 && response.status !== 201) throw Error(body.message);
+  
+      return body;
+    };
+
   return (
     <>
     <AppBar position="static" color="secondary">
@@ -88,24 +146,81 @@ const MyPage = () => {
       </Container>
     </AppBar>
     <Grid justifyContent="center" margin="10px" marginBottom="40px" padding="20px" backgroundColor="#f0a8e0">
-      <Typography align="center" variant="h3" component="h1" fontWeight="bold" color="secondary" >Give feedback to an article!</Typography>
+      <Typography align="center" variant="h3" component="h1" fontWeight="bold" color="secondary" >Read and Review!</Typography>
     </Grid>
-    <FormControl style={{ width: '50%'}} color="secondary" >
-        <InputLabel id="movie-select-label">Select a Movie</InputLabel>
-        <Select labelId="movie-select-label" id="movie-select" value={selectedMovie} onChange={handleSelectChange}>
-          {movieNames.map((title) => (
-            <MenuItem key={title} value={title}>
-              {title}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-        <Grid marginLeft="45%" marginTop="15px" padding="20px">
-          <Button variant="contained" color="secondary" onClick={handleButtonClick} marginTop={2}>
-            Submit
-          </Button>
+    <CssBaseline />
+    <Box
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#FCE8FA",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingTop: "100px"
+      }}
+    >
+      <Container maxWidth="lg"> 
+        <Grid container direction="column" spacing={2} alignItems="center">
+          <Grid item>
+            <FormControl style={{ width: '350px'}} color="secondary">
+              <InputLabel id="movie-select-label">Select a Movie</InputLabel>
+              <Select labelId="movie-select-label" id="movie-select" value={selectedMovie?.name || ''} onChange={handleSelectChange}>
+                {movies.map((movie) => (
+                  <MenuItem key={movie.name} value={movie.name}>
+                    {movie.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          {selectedMovie && (
+            <Grid item xs={12}>
+              {selectedMovie.article_link ? (
+                <>
+                  <Grid container justifyContent="center">
+                    <iframe style={{ backgroundColor: "white" }} width="700px" height="350px" src={selectedMovie.article_link} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                  </Grid>
+                  <Grid container justifyContent="center">
+                    <Grid item>
+                      <IconButton onClick={() => handleButtonClick(0)}>
+                        <img src={thumbsdown} alt="Rate as 0" style={{width: "60px", height: "60px"}} />
+                      </IconButton>
+                      <IconButton onClick={() => handleButtonClick(1)}>
+                        <img src={thumbsup} alt="Rate as 1" style={{width: "60px", height: "60px"}} />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </>
+              ) : (
+                <Typography variant="h6" component="h2" color="secondary">
+                  Please select another movie
+                </Typography>
+              )}
+            </Grid>
+          )}
+          {buttonClicked && (
+            <Grid item container direction="column" alignItems="center">
+              <Grid item>
+                <TextField
+                  id="outlined-basic"
+                  label="OPTIONAL - Provide feedback"
+                  variant="outlined"
+                  color="secondary"
+                  style={{ width: '500px', marginTop: '20px', marginBottom: '20px' }}
+                  onChange={(event) => setFeedback(event.target.value)}
+                />
+              </Grid>
+              <Grid item>
+                <Button variant="contained" color="secondary" onClick={handleFeedbackClick} style={{ marginBottom: '20px' }}>
+                  Submit
+                </Button>
+              </Grid>
+            </Grid>            
+          )}
         </Grid>
-   </>
+      </Container>
+    </Box>
+    </>
   );
 };
 
