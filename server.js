@@ -5,7 +5,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 
-//assumed to be used later
 import response from 'express';
 import fetch from 'node-fetch';
 
